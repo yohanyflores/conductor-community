@@ -15,6 +15,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,7 @@ public class JetStreamConfiguration {
     @ConditionalOnProperty(name = "conductor.default-event-queue.type", havingValue = "jsm")
     @Bean
     public Map<TaskModel.Status, ObservableQueue> getQueues(
-            EventQueueProvider provider,
+            @Qualifier("jsmEventQueueProvider") EventQueueProvider provider,
             ConductorProperties conductorProperties,
             JetStreamProperties properties) {
         String stack = "";

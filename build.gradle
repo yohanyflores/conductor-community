@@ -22,8 +22,9 @@ plugins {
 }
 
 if (project.hasProperty('projVersion')) {
-  rootProject.version = project.projVersion
+    rootProject.version = project.projVersion
 }
+
 
 // Establish version and status
 ext.githubProjectName = rootProject.name // Change if github project name is not the same as the root project's name
@@ -35,6 +36,10 @@ subprojects {
 apply from: "$rootDir/dependencies.gradle"
 
 allprojects {
+    if (project.hasProperty('projVersion')) {
+        version = project.projVersion
+    }
+
     apply plugin: 'nebula.netflixoss'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java-library'
