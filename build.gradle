@@ -21,6 +21,10 @@ plugins {
     id 'org.sonarqube' version '3.1.1'
 }
 
+if (project.hasProperty('projVersion')) {
+  rootProject.version = project.projVersion
+}
+
 // Establish version and status
 ext.githubProjectName = rootProject.name // Change if github project name is not the same as the root project's name
 
@@ -71,6 +75,8 @@ allprojects {
             }
         }
     }
+
+    apply from:"$rootDir/gitlab-maven-publish.gradle"
 
     dependencyManagement {
         imports {

@@ -1,0 +1,25 @@
+// Quiero publicar en gitlab gradle registry
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "Gitlab"
+            url = "https://gitlab.com/api/v4/projects/2679605/packages/maven"
+            credentials(HttpHeaderCredentials) {
+                name = "Private-Token"
+                value = System.getenv("GITLAB_ACCESS_TOKEN")
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }            
+        }
+    }
+}
+

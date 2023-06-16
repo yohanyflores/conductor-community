@@ -43,7 +43,7 @@ public class JetStreamConfiguration {
     @ConditionalOnProperty(name = "conductor.default-event-queue.type", havingValue = "jsm")
     @Bean
     public Map<TaskModel.Status, ObservableQueue> getQueues(
-            JetStreamEventQueueProvider provider,
+            EventQueueProvider provider,
             ConductorProperties conductorProperties,
             JetStreamProperties properties) {
         String stack = "";
