@@ -12,6 +12,7 @@
 package com.netflix.conductor.contribs.queue.nats;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -246,10 +247,49 @@ public class JetStreamObservableQueue implements ObservableQueue {
         }
     }
 
+    private void createParemStream(Connection nc) {
+        if (!properties.isCommonParentStreamEnabled()) {
+            return;
+        }
+
+        JetStreamManagement jsm;
+        try {
+            jsm = nc.jetStreamManagement();
+        } catch (IOException e) {
+            throw new NatsException("Failed to get jsm management", e);
+        }
+
+        StreamConfiguration streamConfig = null;
+
+        try {
+            streamConfig =
+                    StreamConfiguration.builder()
+                            .name(properties.getCommonParentStreamName())
+                            .subjects(properties.getCommonParentStreamSubject())
+                            .retentionPolicy(RetentionPolicy.WorkQueue)
+                            .storageType(StorageType.get(properties.getStreamStorageType()))
+                            .maxAge(Duration.ofDays(30))
+                            .build();
+
+            StreamInfo streamInfo = jsm.addStream(streamConfig);
+            LOG.debug("Create stream, info: {}", streamInfo);
+        } catch (IOException | JetStreamApiException e) {
+            if (streamConfig != null) {
+                LOG.warn("Failed to add stream: " + streamConfig, e);
+            } else {
+                LOG.warn("Failed to add stream: " + properties.getCommonParentStreamName(), e);
+            }
+        }
+    }
+
     private void subscribeOnce(Connection nc, ConnectionListener.Events type) {
         if (type.equals(ConnectionListener.Events.CONNECTED)
                 || type.equals(ConnectionListener.Events.RECONNECTED)) {
-            createStream(nc);
+            if (properties.isCommonParentStreamEnabled()) {
+                createParemStream(nc);
+            } else {
+                createStream(nc);
+            }
             subscribe(nc);
         }
     }

@@ -22,11 +22,22 @@ import io.nats.client.Options;
  */
 @ConfigurationProperties("conductor.event-queues.jsm")
 public class JetStreamProperties {
+    /** Enable common parent stream for all queues. */
+    private boolean commonParentStreamEnabled = false;
+
+    /** The common parent stream Name for all queues. */
+    private String commonParentStreamName = "";
+
+    /** The common parent subject for all queues. */
+    private String commonParentStreamSubject = "";
+
     private String listenerQueuePrefix = "";
+
     /** The durable subscriber name for the subscription */
     private String durableName = "defaultQueue";
 
     private String streamStorageType = "file";
+
     /** The NATS connection url */
     private String url = Options.DEFAULT_URL;
 
@@ -81,5 +92,29 @@ public class JetStreamProperties {
 
     public void setDefaultQueueGroup(String defaultQueueGroup) {
         this.defaultQueueGroup = defaultQueueGroup;
+    }
+
+    public boolean isCommonParentStreamEnabled() {
+        return commonParentStreamEnabled;
+    }
+
+    public void setCommonParentStreamEnabled(boolean commonParentStreamEnabled) {
+        this.commonParentStreamEnabled = commonParentStreamEnabled;
+    }
+
+    public String getCommonParentStreamName() {
+        return commonParentStreamName;
+    }
+
+    public void setCommonParentStreamName(String commonParentStreamName) {
+        this.commonParentStreamName = commonParentStreamName;
+    }
+
+    public String getCommonParentStreamSubject() {
+        return commonParentStreamSubject;
+    }
+
+    public void setCommonParentStreamSubject(String commonParentStreamSubject) {
+        this.commonParentStreamSubject = commonParentStreamSubject;
     }
 }
